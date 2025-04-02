@@ -1,5 +1,9 @@
 # EKS Terraform Infrastructure
 
+![Terraform](https://img.shields.io/badge/terraform-%235835CC.svg?style=for-the-badge&logo=terraform&logoColor=white)
+![Kubernetes](https://img.shields.io/badge/kubernetes-%23326ce5.svg?style=for-the-badge&logo=kubernetes&logoColor=white)
+![AWS](https://img.shields.io/badge/AWS-%23FF9900.svg?style=for-the-badge&logo=amazon-aws&logoColor=white)
+
 This repository contains Terraform configuration for deploying a production-ready Amazon EKS (Elastic Kubernetes Service) cluster with all necessary networking components and IAM roles, along with Kubernetes network policies and ingress configurations.
 
 ## Architecture
@@ -129,6 +133,10 @@ kubectl apply -f ingress-commune-drop-configuration.yaml
 
 - **AWS Application Load Balancer (ALB)**: Configured via ingress resources to route traffic to services
 - **API Gateway Pattern**: Multiple path-based routing rules to direct traffic to appropriate microservices
+
+<p align="center">
+  <img src="assets/networking-diagram.png" alt="Networking Diagram" width="700"/>
+</p>
 
 ## Kubernetes Network Configurations
 
