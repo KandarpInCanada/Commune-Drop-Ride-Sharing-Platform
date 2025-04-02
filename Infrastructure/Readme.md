@@ -1,6 +1,6 @@
 # EKS Terraform Infrastructure
 
-This repository contains Terraform configuration for deploying a production-ready Amazon EKS (Elastic Kubernetes Service) cluster with all necessary networking components and IAM roles.
+This repository contains Terraform configuration for deploying a production-ready Amazon EKS (Elastic Kubernetes Service) cluster with all necessary networking components and IAM roles, along with Kubernetes network policies and ingress configurations.
 
 ## Architecture
 
@@ -28,7 +28,12 @@ This Terraform configuration creates:
   - OIDC provider for service account IAM role integration
 
 - **Add-ons**:
+
   - AWS Load Balancer Controller via Helm
+
+- **Kubernetes Network Configurations**:
+  - Network Policies for controlling egress traffic
+  - Ingress resources using AWS ALB for routing traffic to various microservices
 
 ## Prerequisites
 
@@ -94,6 +99,16 @@ terraform output config_map_aws_auth > aws-auth-cm.yaml
 kubectl apply -f aws-auth-cm.yaml
 ```
 
+### 7. Apply Kubernetes Network Configurations
+
+Apply the Network Policy and Ingress configurations:
+
+```bash
+kubectl apply -f egress-configuration.yaml
+kubectl apply -f ingress-live-location-configuration.yaml
+kubectl apply -f ingress-commune-drop-configuration.yaml
+```
+
 ## Infrastructure Components
 
 ### Networking
@@ -108,6 +123,34 @@ kubectl apply -f aws-auth-cm.yaml
 - **Security Groups**: Control inbound and outbound traffic to cluster and nodes
 - **IAM Roles and Policies**: Provide necessary permissions for the EKS cluster and nodes
 - **Load Balancer Controller**: Manages AWS Elastic Load Balancers for Kubernetes services
+- **Network Policies**: Control egress traffic at the pod level
+
+### Ingress Controllers and Routing
+
+- **AWS Application Load Balancer (ALB)**: Configured via ingress resources to route traffic to services
+- **API Gateway Pattern**: Multiple path-based routing rules to direct traffic to appropriate microservices
+
+## Kubernetes Network Configurations
+
+### Network Policies
+
+- **allow-stripe-egress**: Permits HTTPS egress traffic (port 443) from payment service pods to Stripe API
+
+### Ingress Resources
+
+- **api-gateway**: Routes traffic to multiple microservices in the Commune Drop application:
+
+  - `/socket.io` → commune-drop-service
+  - `/payment` → payment-service
+  - `/order` → order-service
+  - `/location` → location-service
+  - `/auth` → auth-service
+  - `/` (root) → commune-drop-service
+
+- **live-api-gateway**: Routes traffic for the Live Location application:
+  - `/api` → live-location-service
+  - `/socket.io` → live-location-service
+  - `/` (root) → live-location-frontend-service
 
 ## Outputs
 
@@ -129,6 +172,8 @@ To customize this deployment, you can modify:
 - Region and availability zones
 - CIDR blocks for VPC and subnets
 - EKS version
+- Network policies to control traffic between services
+- Ingress rules to modify routing behavior
 
 ## Cleanup
 
@@ -144,3 +189,23 @@ terraform destroy
 - IAM roles follow the principle of least privilege
 - Worker nodes are placed in private subnets for enhanced security
 - Security groups are configured to allow only necessary traffic
+- Network policies restrict egress traffic from payment service pods to enhance security
+- Ingress resources use ALB to properly route traffic to internal services
+
+## Application Architecture
+
+The configuration supports a microservices architecture with:
+
+1. **Commune Drop Application**:
+
+   - Auth Service
+   - Payment Service
+   - Order Service
+   - Location Service
+   - Main Application Service
+
+2. **Live Location Application**:
+   - Live Location API Service
+   - Live Location Frontend Service
+
+All services are exposed through AWS ALB Ingress Controllers configured with appropriate routing rules.
