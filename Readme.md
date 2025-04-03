@@ -14,7 +14,4 @@
 ![Tailwind CSS Badge](https://img.shields.io/badge/Tailwind%20CSS-06B6D4?logo=tailwindcss&logoColor=fff&style=for-the-badge)
 ![Redis Badge](https://img.shields.io/badge/Redis-FF4438?logo=redis&logoColor=fff&style=for-the-badge)
 
-<video width="640" height="360" controls>
-  <source src="./Assets/CommuneDrop-SR.mp4" type="video/mp4">
-  Your browser does not support the video tag.
-</video>
+![Demo Video](./Assets/CommuneDrop-SR.mp4)
