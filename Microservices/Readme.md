@@ -6,7 +6,7 @@ This repository contains a collection of microservices that power the CommuneDro
 
 ## Services
 
-### [AuthService](./AuthService/README.md)
+### [AuthService](./AuthService)
 
 The AuthService handles user authentication, authorization, and user management.
 
