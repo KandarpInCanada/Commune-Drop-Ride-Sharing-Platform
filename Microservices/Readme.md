@@ -29,9 +29,3 @@ The OrderService manages the entire order lifecycle from creation to delivery, i
 ### [PaymentService](./PaymentService)
 
 The PaymentService handles all payment-related operations including customer management, payment method handling, payment processing, and refund management through Stripe integration.
-
-## Architecture Overview
-
-Our microservices communicate with each other through RESTful APIs and are designed to be independently deployable and scalable.
-
-### Microservice Architecture Diagram
