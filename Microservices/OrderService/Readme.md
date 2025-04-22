@@ -13,18 +13,18 @@
 
 ## Overview
 
-OrderService is a critical component of our delivery platform, providing comprehensive order management and payment processing capabilities. This microservice handles the entire order lifecycle from creation to delivery, integrates with payment services, and communicates order status changes to other services through Kafka messaging.
+OrderService is a microservice for managing delivery orders in a delivery platform. It handles order creation, payment processing, status management, and communicates with other services through Kafka messaging.
 
 **Key Features:**
 
 - **Order Creation**: Create delivery orders with detailed pricing and route information
-- **Payment Processing**: Integrate with payment services for transaction handling
-- **Order Status Management**: Track and update order status throughout the delivery lifecycle
-- **Pricing Calculation**: Determine delivery costs based on distance, vehicle type, and other factors
-- **Event-Driven Architecture**: Publish order events to Kafka for system-wide notifications
+- **Payment Processing**: Integration with payment service
+- **Order Status Management**: Track order status throughout the delivery lifecycle
+- **Pricing Calculation**: Calculate delivery costs based on distance and vehicle type
+- **Event-Driven Architecture**: Publish order events to Kafka for notifications
 - **Secure API**: JWT-based authentication with role-based access control
-- **Kubernetes Deployment**: Containerized and orchestrated for high availability
-- **Comprehensive Documentation**: Swagger/OpenAPI for API documentation
+- **Kubernetes Deployment**: Containerized deployment with Kubernetes
+- **API Documentation**: Swagger/OpenAPI documentation
 
 ---
 
@@ -32,25 +32,13 @@ OrderService is a critical component of our delivery platform, providing compreh
 
 ### Microservice Integration
 
-OrderService is designed to integrate with other microservices in your ecosystem:
+OrderService integrates with other microservices:
 
-| Service                 | Interaction                                             |
-| ----------------------- | ------------------------------------------------------- |
-| **PaymentService**      | Processes payments and refunds for orders               |
-| **UserService**         | Provides user information for order association         |
-| **RiderService**        | Assigns and manages riders for order delivery           |
-| **LocationService**     | Provides geocoding and route calculation for deliveries |
-| **AuthService**         | Validates JWT tokens for secure API access              |
-| **NotificationService** | Receives order status updates via Kafka                 |
-
-#### Data Flow
-
-1. **Order Creation**: User creates an order with delivery details
-2. **Pricing Calculation**: System calculates delivery costs based on distance and vehicle type
-3. **Payment Processing**: Order is linked with payment transaction
-4. **Status Updates**: Order status changes are tracked and broadcast via Kafka
-5. **Delivery Assignment**: Orders are assigned to riders for fulfillment
-6. **Completion/Cancellation**: Orders are marked as delivered or cancelled with appropriate payment handling
+| Service            | Interaction                                |
+| ------------------ | ------------------------------------------ |
+| **PaymentService** | Processes payments and refunds for orders  |
+| **AuthService**    | Validates JWT tokens for secure API access |
+| **KafkaService**   | Messaging system for order status updates  |
 
 ---
 
@@ -82,57 +70,37 @@ OrderService is designed to integrate with other microservices in your ecosystem
 
 1. **Clone the repository**
 
-```shellscript
-git clone https://github.com/yourusername/OrderService.git
-cd OrderService
-```
+   ```shellscript
+   git clone https://github.com/yourusername/OrderService.git
+   cd OrderService
+   ```
 
 2. **Install dependencies**
 
-```shellscript
-npm install
-```
+   ```shellscript
+   npm install
+   ```
 
 3. **Set up environment variables**
 
-Copy `.env.example` to `.env` and fill in your configuration values.
+   ```plaintext
+   PORT=9002
+   DB_URL=mongodb+srv://username:password@cluster.mongodb.net/database
+   PAYMENT_SERVICE=http://payment-service/payment
+   CLIENT_ID=order-service
+   GROUP_ID=order-service-group
+   BROKER_1=kafka:9092
+   ```
 
 4. **Start the development server**
 
-```shellscript
-npm run dev
-```
+   ```shellscript
+   npm run dev
+   ```
 
 5. **Access the API documentation**
 
-Open your browser and navigate to `http://localhost:9002/api-docs`
-
----
-
-## Configuration
-
-### Environment Variables
-
-```plaintext
-# Server
-PORT=9002
-NODE_ENV=development
-LOG_LEVEL=info
-
-# MongoDB
-DB_URL=mongodb+srv://username:password@cluster.mongodb.net/database
-
-# Kafka Configuration
-CLIENT_ID=order-service
-GROUP_ID=order-service-group
-BROKER_1=kafka:9092
-
-# Payment Service
-PAYMENT_SERVICE=http://payment-service/payment
-
-# Authentication
-JWT_SECRET=your_jwt_secret_key
-```
+   Open your browser and navigate to `http://localhost:9002/api-docs`
 
 ---
 
@@ -173,7 +141,6 @@ JWT_SECRET=your_jwt_secret_key
 │   ├── OrderService-secret.yaml
 │   └── OrderService-deployment.yaml
 ├── docker-compose.yml      # Docker compose for local development
-└── package.json            # Project dependencies
 ```
 
 ---
@@ -182,39 +149,29 @@ JWT_SECRET=your_jwt_secret_key
 
 ### Order Management
 
-- Create delivery orders with detailed information (addresses, package details, etc.)
-- Track order status throughout the delivery lifecycle
-- Support for different vehicle types (BIKE, CAR, TRUCK, WALK)
-- Comprehensive order history for users and riders
+- Create delivery orders with addresses, package details, and pricing
+- Track order status: ORDER PLACED, ORDER CONFIRMED, PAYMENT RECEIVED, AWAITING PICKUP, OUT FOR DELIVERY, DELIVERED, CANCELLED
+- Support for different vehicle types: BIKE, CAR, TRUCK, WALK
+- Order history for users and riders
 - Order cancellation with refund processing
 
 ### Payment Processing
 
-- Integration with payment service for transaction handling
+- Integration with payment service
 - Payment verification and status updates
 - Refund processing for cancelled orders
-- Secure payment information handling
 
 ### Pricing Calculation
 
 - Dynamic pricing based on distance, vehicle type, and package weight
 - Tax calculation and itemized pricing details
 - Rider commission calculation
-- Transparent pricing breakdown for users
 
 ### Event-Driven Architecture
 
 - Kafka-based messaging for order status updates
-- Real-time notifications for order events
-- Decoupled communication with other microservices
-- Reliable event delivery with error handling
-
-### Caching and Performance
-
-- Efficient database queries with proper indexing
-- Structured logging for monitoring and debugging
-- Error handling with appropriate status codes
-- Request validation for data integrity
+- Notification service for order events
+- Error handling and resilience in message processing
 
 ---
 
@@ -222,70 +179,63 @@ JWT_SECRET=your_jwt_secret_key
 
 ### Configuration Files
 
-- **OrderService-configmap.yaml**: Non-sensitive configuration
-- **OrderService-secret.yaml**: Sensitive data (MongoDB connection string)
-- **OrderService-deployment.yaml**: Service deployment and LoadBalancer
-
-### Deployment Steps
-
-1. **Apply Kubernetes configurations**
-
-```shellscript
-kubectl apply -f k8s/
-```
-
-2. **Verify deployments**
-
-```shellscript
-kubectl get deployments
-kubectl get pods
-kubectl get services
-```
-
-3. **Access the service**
-
-The service is exposed through a LoadBalancer. Get the external IP:
-
-```shellscript
-kubectl get services order-service
-```
+- **OrderService-configmap.yaml**: Configuration for port and payment service URL
+- **OrderService-secret.yaml**: MongoDB connection string
+- **OrderService-deployment.yaml**: Service deployment with resource limits and LoadBalancer
 
 ---
 
-## Scalability and Resilience
+## API Endpoints
 
-- **Horizontal Scaling**: Kubernetes automatically scales pods based on CPU/memory usage
-- **Resource Limits**: Configured memory and CPU limits for predictable performance
-- **Health Checks**: Readiness and liveness probes for reliable operation
-- **Graceful Shutdown**: Proper handling of termination signals
-- **Error Handling**: Comprehensive error handling with appropriate status codes
-- **MongoDB Connection Resilience**: Retry strategy for database connection failures
-- **Kafka Resilience**: Robust message handling with error recovery
+The service includes comprehensive API documentation using Swagger/OpenAPI at `/api-docs`
 
----
+### Key Endpoints
 
-## Performance Optimizations
-
-- **Efficient Database Queries**: Proper indexing and query optimization
-- **Structured Logging**: Production-appropriate logging levels
-- **Request Validation**: Early validation to prevent unnecessary processing
-- **Error Classification**: Detailed error information for troubleshooting
-- **Response Formatting**: Consistent API response structure
-- **Selective Response Fields**: Only necessary data returned to clients
+| Endpoint                              | Method | Description                  | Required Scope    |
+| ------------------------------------- | ------ | ---------------------------- | ----------------- |
+| `/order/create`                       | POST   | Create a new delivery order  | `order.write`     |
+| `/order/cancle/:order_id`             | POST   | Cancel an existing order     | `order.write`     |
+| `/order/payment`                      | POST   | Process payment for an order | `order.write`     |
+| `/order/updateStatus`                 | PUT    | Update order status          | `order.write`     |
+| `/order/getAllOrders/user/:user_id`   | GET    | Get all orders for a user    | `order.read`      |
+| `/order/getAllOrders/rider/:rider_id` | GET    | Get all orders for a rider   | `order.read`      |
+| `/order/refund`                       | POST   | Process refund for an order  | `order.write`     |
+| `/`                                   | GET    | Health check endpoint        | No authentication |
 
 ---
 
-## Monitoring and Debugging
+## Authentication
 
-- **Health Check Endpoint**: `/` endpoint returns health status
-- **Structured Logging**: JSON-formatted logs with request context
-- **Request Tracing**: HTTP request logging with Pino
-- **Error Classification**: Detailed error information for troubleshooting
-- **Kafka Message Monitoring**: Logging of message publishing and consumption
+The service uses JWT-based authentication with scope-based authorization:
+
+- `order.read` scope is required for read operations
+- `order.write` scope is required for write operations
 
 ---
 
-## API Documentation
+## Troubleshooting
+
+Common issues and solutions:
+
+1. **MongoDB Connection Issues**
+
+1. Check DB_URL environment variable
+1. Verify network connectivity to MongoDB
+
+1. **Kafka Connection Issues**
+
+1. Verify Kafka broker addresses
+1. Check CLIENT_ID and GROUP_ID configuration
+
+1. **JWT Authentication Problems**
+
+1. Check token expiration and scope claims
+1. Ensure Authorization header is properly formatted
+
+1. **Payment Service Integration**
+
+1. Verify PAYMENT_SERVICE environment variable
+1. Check network connectivity to payment service
 
 The service includes comprehensive API documentation using Swagger/OpenAPI:
 
