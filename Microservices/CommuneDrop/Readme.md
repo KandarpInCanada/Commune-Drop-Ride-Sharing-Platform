@@ -1,6 +1,11 @@
 # CommuneDrop Frontend Service
 
-## 📋 Overview
+![React](https://img.shields.io/badge/React-61DAFB.svg?style=for-the-badge&logo=React&logoColor=black)
+![Vite](https://img.shields.io/badge/Vite-646CFF.svg?style=for-the-badge&logo=Vite&logoColor=white)
+![TailwindCSS](https://img.shields.io/badge/Tailwind%20CSS-06B6D4.svg?style=for-the-badge&logo=Tailwind-CSS&logoColor=white)
+![Kafka](https://img.shields.io/badge/Apache%20Kafka-231F20.svg?style=for-the-badge&logo=Apache-Kafka&logoColor=white)
+
+## Overview
 
 CommuneDrop is a delivery tracking application with a microservice architecture. This repository contains the **Frontend Service** that provides the user interface and coordinates communication between all microservices.
 
@@ -13,7 +18,7 @@ CommuneDrop is a delivery tracking application with a microservice architecture.
 
 ---
 
-## 🏗️ Architecture
+## Architecture
 
 ### Microservices
 
@@ -29,7 +34,7 @@ This frontend service communicates with:
 
 ### Communication Flow
 
-![Service Communication](/placeholder.svg?height=250&width=600&query=microservice%20communication%20diagram)
+#### Service Communication
 
 1. **Service-to-Service Authentication:**
 
@@ -42,7 +47,7 @@ This frontend service communicates with:
 
 ---
 
-## 🚀 Getting Started
+## Getting Started
 
 ### Prerequisites
 
@@ -84,7 +89,7 @@ This frontend service communicates with:
 
 ---
 
-## ⚙️ Configuration
+## Configuration
 
 ### Environment Variables
 
@@ -116,7 +121,7 @@ PORT=3001
 
 ---
 
-## 📁 Project Structure
+## Project Structure
 
 ```plaintext
 ├── src/                  # Frontend React application
@@ -132,7 +137,7 @@ PORT=3001
 
 ---
 
-## 🔒 Authentication
+## Authentication
 
 ### User Authentication
 
@@ -147,7 +152,7 @@ PORT=3001
 
 ---
 
-## 📡 Real-time Features
+## Real-time Features
 
 ### Location Tracking
 
@@ -164,7 +169,7 @@ PORT=3001
 
 ---
 
-## 💳 Payment Processing
+## Payment Processing
 
 - Secure integration with Stripe
 - PaymentService handles all payment operations
@@ -173,7 +178,7 @@ PORT=3001
 
 ---
 
-## 🚢 Deployment
+## Deployment
 
 ### Kubernetes Deployment
 
@@ -203,7 +208,7 @@ kubectl get services
 
 ---
 
-## 🔍 Troubleshooting
+## Troubleshooting
 
 ### Common Issues
 
