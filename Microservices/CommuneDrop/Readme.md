@@ -1,148 +1,223 @@
-### Commune Drop Frontend
+# CommuneDrop Frontend Service
 
-## Overview
+## 📋 Overview
 
-The Commune Drop Frontend is the client-side application for the Commune Drop delivery platform. It provides a user-friendly interface for customers to book deliveries, track orders, and manage their accounts, as well as for carriers to manage their deliveries.
+CommuneDrop is a delivery tracking application with a microservice architecture. This repository contains the **Frontend Service** that provides the user interface and coordinates communication between all microservices.
 
-## Features
+**Key Features:**
 
-- User registration and authentication
-- Delivery booking with address selection
-- Real-time order tracking
-- Payment processing
-- Order history and management
-- Carrier assignment and tracking
-- User profile management
-- Notifications and alerts
+- Real-time delivery tracking on maps
+- Live notifications for order updates
+- Secure payment processing
+- Order history and delivery estimates
 
+---
 
-## Technology Stack
+## 🏗️ Architecture
 
-- Framework: React.js / Next.js
-- State Management: Redux / Context API
-- Styling: Tailwind CSS / Styled Components
-- Maps: Google Maps / Mapbox
-- Real-time Updates: WebSockets / Socket.io
-- HTTP Client: Axios / Fetch API
-- Form Handling: Formik / React Hook Form
+### Microservices
 
+This frontend service communicates with:
 
-## Backend Integration
+| Service                 | Purpose                           |
+| ----------------------- | --------------------------------- |
+| **AuthService**         | Authentication and OAuth tokens   |
+| **LiveLocationService** | Real-time driver location updates |
+| **LocationService**     | Geocoding and route calculations  |
+| **OrderService**        | Order management                  |
+| **PaymentService**      | Payment processing via Stripe     |
 
-The frontend communicates with these backend services:
+### Communication Flow
 
-- Auth Service: For user authentication and profile management
-- Order Service: For creating and managing delivery orders
-- Location Service: For address selection and order tracking
-- Payment Service: For processing payments
-- Notification Service: For real-time alerts
-- Valuation Service: For delivery price calculation
-- Carrier Service: For carrier information and ratings
+![Service Communication](/placeholder.svg?height=250&width=600&query=microservice%20communication%20diagram)
 
+1. **Service-to-Service Authentication:**
 
-## Setup
+   - Frontend requests OAuth tokens from AuthService
+   - Tokens with specific scopes authorize requests to other services
+
+2. **Real-time Updates:**
+   - Driver locations stream through Kafka topics
+   - WebSocket server delivers updates to the frontend
+
+---
+
+## 🚀 Getting Started
 
 ### Prerequisites
 
-- Node.js v16+
-- npm or yarn
-- Backend services running (or configured API endpoints)
-
+- Node.js (v16+)
+- Docker and Docker Compose
+- Kubernetes (for production)
+- API keys for:
+  - Supabase
+  - Google Maps
+  - Stripe
 
 ### Quick Start
 
-1. Clone the repository
+1. **Clone the repository**
 
+2. **Install dependencies**
+
+   ```bash
+   npm install
+   ```
+
+3. **Set up environment variables**
+
+4. Copy `.env.example` to `.env`
+5. Fill in your service URLs and API keys
+
+6. **Start the development server**
+
+   ```shellscript
+   npm run dev
+   ```
+
+7. **Start the WebSocket server**
+
+   ```shellscript
+   cd server
+   node websocket-server.js
+   ```
+
+---
+
+## ⚙️ Configuration
+
+### Environment Variables
+
+```plaintext
+# Authentication
+VITE_SUPABASE_URL=your_supabase_url
+VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
+VITE_AUTH_SERVICE_URL=your_auth_service_url
+VITE_CLIENT_ID=your_oauth_client_id
+VITE_CLIENT_SECRET=your_oauth_client_secret
+
+# Service URLs
+VITE_PAYMENT_SERVICE_URL=your_payment_service_url
+VITE_ORDER_SERVICE_URL=your_order_service_url
+VITE_LOCATION_SERVICE_URL=your_location_service_url
+VITE_LIVE_LOCATION_SERVICE_URL=your_live_location_service_url
+
+# External APIs
+VITE_PUBLIC_GOOGLE_MAPS_API_KEY=your_google_maps_api_key
+VITE_PUBLIC_STRIPE_API_KEY=your_stripe_api_key
+
+# WebSocket and Kafka
+VITE_WEBSOCKET_URL=your_websocket_url
+VITE_KAFKA_TOPIC_PREFIX=user-updates-
+
+# Server
+PORT=3001
+```
+
+---
+
+## 📁 Project Structure
+
+```plaintext
+├── src/                  # Frontend React application
+│   ├── components/       # UI components
+│   ├── context/          # React context providers
+│   ├── hooks/            # Custom React hooks
+│   ├── pages/            # Application pages
+│   ├── services/         # API service clients
+│   └── utils/            # Utility functions
+├── server/               # WebSocket server
+└── k8s/                  # Kubernetes configurations
+```
+
+---
+
+## 🔒 Authentication
+
+### User Authentication
+
+- Handled through Supabase
+- Supports email/password and Google OAuth
+
+### Service-to-Service Authentication
+
+- OAuth-based system for secure microservice communication
+- Frontend requests scoped access tokens from AuthService
+- Each service validates tokens before processing requests
+
+---
+
+## 📡 Real-time Features
+
+### Location Tracking
+
+- LiveLocationService publishes to Kafka topics
+- Format: `driver-location-{orderId}`
+- WebSocket server subscribes to relevant topics
+- Frontend displays updates on Google Maps
+
+### Notifications
+
+- Order status changes trigger notifications
+- Delivered through WebSocket connection
+- Topics format: `user-updates-{userId}`
+
+---
+
+## 💳 Payment Processing
+
+- Secure integration with Stripe
+- PaymentService handles all payment operations
+- Frontend collects payment details
+- Order confirmation after successful payment
+
+---
+
+## 🚢 Deployment
+
+### Kubernetes Deployment
+
+1. **Update configuration files**
+
+1. Edit `k8s/CommuneDrop-ConfigMap.yaml`
+1. Edit `k8s/CommuneDrop-secret.yaml`
+
+1. **Deploy the application**
 
 ```shellscript
-git clone https://github.com/commune-drop/frontend.git
-cd frontend
+kubectl apply -f k8s/
 ```
 
-2. Install dependencies
-
+3. **Verify deployment**
 
 ```shellscript
-npm install
-# or
-yarn install
+kubectl get pods
+kubectl get services
 ```
 
-3. Configure environment variables
+### Health Monitoring
 
+- WebSocket server provides `/health` endpoint
+- Returns Kafka connection status
+- Shows number of connected users
 
-```shellscript
-cp .env.example .env.local
-# Edit .env.local with your configuration
-```
+---
 
-4. Start the development server
+## 🔍 Troubleshooting
 
+### Common Issues
 
-```shellscript
-npm run dev
-# or
-yarn dev
-```
+1. **Connection errors to other services**
 
-5. Build for production
+1. Check if OAuth tokens are being correctly requested
+1. Verify service URLs in environment variables
 
+1. **Real-time updates not working**
 
-```shellscript
-npm run build
-# or
-yarn build
-```
+1. Ensure Kafka and WebSocket server are running
+1. Check topic subscriptions in WebSocket server
 
-## Configuration
+1. **Payment processing failures**
 
-Key environment variables:
-
-```env
-NEXT_PUBLIC_API_BASE_URL=https://api.communedrop.com
-NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=your_google_maps_api_key
-NEXT_PUBLIC_SOCKET_URL=wss://socket.communedrop.com
-```
-
-## Application Structure
-
-- `/pages`: Application routes and pages
-- `/components`: Reusable UI components
-- `/hooks`: Custom React hooks
-- `/store`: State management
-- `/services`: API service integrations
-- `/utils`: Helper functions and utilities
-- `/styles`: Global styles and theme configuration
-- `/public`: Static assets
-
-
-## Key User Flows
-
-- Customer Registration and Onboarding
-- Delivery Booking Process
-- Real-time Order Tracking
-- Payment Processing
-- Carrier Assignment and Management
-- User Profile and Settings
-
-
-## Responsive Design
-
-The application is fully responsive and optimized for:
-
-- Desktop browsers
-- Tablets
-- Mobile devices
-
-
-## Performance Optimization
-
-- Code splitting and lazy loading
-- Image optimization
-- Caching strategies
-- Server-side rendering for SEO
-
-
-## License
-
-MIT
+1. Verify Stripe API keys
+1. Check PaymentService logs for detailed errors
