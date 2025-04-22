@@ -20,7 +20,8 @@
 
 ## Demo
 
-![Demo Video](./Assets/CommuneDrop-SR.mp4)
+
+https://github.com/user-attachments/assets/3206cf45-ed47-479b-aa5f-7d48ca64f0cc
 
 ## Overview
 
