@@ -10,23 +10,23 @@ This repository contains a collection of microservices that power the CommuneDro
 
 The AuthService handles user authentication, authorization, and user management.
 
-### [CommuneDrop](./CommuneDrop/README.md)
+### [CommuneDrop](./CommuneDrop)
 
 The main application service that coordinates between other microservices.
 
-### [LiveLocationService](./LiveLocationService/README.md)
+### [LiveLocationService](./LiveLocationService)
 
 The LiveLocationService tracks real-time location data for deliveries and riders.
 
-### [LocationService](./LocationService/README.md)
+### [LocationService](./LocationService)
 
 The LocationService manages location data, geocoding, and route calculations.
 
-### [OrderService](./OrderService/README.md)
+### [OrderService](./OrderService)
 
 The OrderService manages the entire order lifecycle from creation to delivery, integrates with payment services, and communicates order status changes.
 
-### [PaymentService](./PaymentService/README.md)
+### [PaymentService](./PaymentService)
 
 The PaymentService handles all payment-related operations including customer management, payment method handling, payment processing, and refund management through Stripe integration.
 
