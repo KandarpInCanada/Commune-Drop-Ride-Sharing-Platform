@@ -29,7 +29,11 @@ CommuneDrop is a comprehensive delivery tracking platform built with a modern mi
 
 ## System Architecture
 
+<img width="663" alt="Screenshot 2025-04-22 at 11 03 15 PM" src="https://github.com/user-attachments/assets/2a1e43c2-4562-4842-9d44-c07ae39f351b" />
+
 CommuneDrop is built on a robust microservice architecture with the following components:
+
+
 
 ### Microservices
 
