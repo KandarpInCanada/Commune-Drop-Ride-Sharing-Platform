@@ -20,7 +20,6 @@
 
 ## Demo
 
-
 https://github.com/user-attachments/assets/3206cf45-ed47-479b-aa5f-7d48ca64f0cc
 
 ## Overview
@@ -32,8 +31,6 @@ CommuneDrop is a comprehensive delivery tracking platform built with a modern mi
 <img width="663" alt="Screenshot 2025-04-22 at 11 03 15 PM" src="https://github.com/user-attachments/assets/2a1e43c2-4562-4842-9d44-c07ae39f351b" />
 
 CommuneDrop is built on a robust microservice architecture with the following components:
-
-
 
 ### Microservices
 
@@ -165,28 +162,6 @@ The `/Infrastructure/Kubernetes` directory contains:
 - `egress-configuration.yaml`: Outbound traffic rules
 - `ingress-commune-drop-configuration.yaml`: Ingress rules for the main application
 - `ingress-live-location-configuration.yaml`: Ingress rules for the location service
-
-### Deployment Architecture
-
-```
-                                  ┌─────────────────┐
-                                  │   AWS Route53   │
-                                  └────────┬────────┘
-                                           │
-                                  ┌────────▼────────┐
-                                  │  Load Balancer  │
-                                  └────────┬────────┘
-                                           │
-                 ┌───────────────┬─────────┴──────────┬───────────────┐
-                 │               │                    │               │
-        ┌────────▼─────┐ ┌───────▼────────┐  ┌───────▼────────┐ ┌────▼───────────┐
-        │ AuthService  │ │ Frontend       │  │ OrderService   │ │ PaymentService │
-        └──────────────┘ └───────┬────────┘  └───────┬────────┘ └────────────────┘
-                                  │                   │
-                         ┌────────▼────────┐ ┌───────▼────────┐
-                         │LocationService  │ │LiveLocationSvc │
-                         └─────────────────┘ └────────────────┘
-```
 
 ## Getting Started
 
